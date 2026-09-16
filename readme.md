@@ -1,8 +1,8 @@
 <h1>숙련주차 프로젝트 과제</h1>
 <ol>
     <li>Docker로 MySQL & Redis 설정✅</li>
-    <li>SQL로 JPA 인덱스 표현</li>
-    <li>요청 검증과 DTO (플레이어 등록)</li>
+    <li>SQL로 JPA 인덱스 표현✅</li>
+    <li>요청 검증과 DTO (플레이어 등록)✅</li>
     <li>월드 생성</li>
     <li>채팅 저장과 내역 조회</li>
     <li>최근 채팅 조회 API 구현</li>

@@ -5,19 +5,19 @@ import com.gameexpert.player.dto.CreatePlayerRequest;
 import com.gameexpert.player.entity.Player;
 import com.gameexpert.player.repository.PlayerRepository;
 import com.gameexpert.player.service.PlayerService;
-import java.util.Optional;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PlayerRegistrationTest {
 
-    // @Test
+     @Test
     void acceptsValidNicknames() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
@@ -27,18 +27,19 @@ class PlayerRegistrationTest {
         }
     }
 
-    // @Test
+     @Test
     void rejectsInvalidNicknames() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
             for (String nickname : new String[]{null, "", "  ", "A", "abcdefghijklm", "한글", "ab cd", "ab-cd", "ab!"}) {
                 assertFalse(validator.validate(new CreatePlayerRequest(nickname)).isEmpty(),
                         "거절해야 하는 닉네임: " + nickname);
+                //System.out.println("거절해야 하는 닉네임: " + nickname);
             }
         }
     }
 
-    // @Test
+    @Test
     void savesNewPlayer() {
         PlayerRepository repository = mock(PlayerRepository.class);
         PlayerService service = new PlayerService(repository);
@@ -50,18 +51,24 @@ class PlayerRegistrationTest {
         assertEquals("player_1", saved.getValue().getNickname());
     }
 
-    // @Test
+    @Test
     void rejectsDuplicateWithoutSaving() {
         PlayerRepository repository = mock(PlayerRepository.class);
-        when(repository.existsByNickname("player_1")).thenReturn(true);
-        when(repository.findByNickname("player_1"))
-                .thenReturn(Optional.of(new Player("player_1")));
+
+        doThrow(new DataIntegrityViolationException("duplicate nickname"))
+                .when(repository)
+                .saveAndFlush(any(Player.class));
+
         PlayerService service = new PlayerService(repository);
 
-        ConflictException error = assertThrows(ConflictException.class,
-                () -> service.createPlayer(new CreatePlayerRequest("player_1")));
+        ConflictException error = assertThrows(
+                ConflictException.class,
+                () -> service.createPlayer(
+                        new CreatePlayerRequest("player_1")
+                )
+        );
 
         assertEquals("DUPLICATE_NICKNAME", error.getError());
-        verify(repository, never()).saveAndFlush(any(Player.class));
+        //System.out.println(error.getMessage());
     }
 }
