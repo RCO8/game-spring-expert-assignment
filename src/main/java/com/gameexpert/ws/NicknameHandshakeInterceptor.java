@@ -1,6 +1,7 @@
 package com.gameexpert.ws;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -47,34 +49,43 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         String nickname = readNickname(request);
-        if (nickname == null || nickname.isBlank()) {
+        if (playerRepository.existsByNickname(nickname)) {
             attributes.put(ATTR_ERROR_CODE, 4000);
             return true;
         }
 
         // TODO Lv 7: 닉네임으로 플레이어를 조회합니다. 없으면 null을 사용합니다.
-        Player player = null;
-        if (player == null) {
+        Optional<Player> playerOptional = playerRepository.findByNickname(nickname);
+        if (playerOptional.isEmpty()) {
             attributes.put(ATTR_ERROR_CODE, 4000);
             return true;
         }
+        Player player = playerOptional.get();
 
         Long worldId = readWorldId(request);
         if (worldId == null) {
             attributes.put(ATTR_ERROR_CODE, 4001);
             return true;
         }
+
         // TODO Lv 7: worldId로 월드를 조회합니다. 없으면 null을 사용합니다.
-        World world = null;
-        if (world == null || worldRepository.isDimensionChild(worldId)) {
+        Optional<World> worldOptional = worldRepository.findById(worldId);
+        if (worldOptional.isEmpty()) {
+            attributes.put(ATTR_ERROR_CODE, 4001);
+            return true;
+        }
+        World world = worldOptional.get();
+
+        if (worldRepository.isDimensionChild(worldId)) {
             attributes.put(ATTR_ERROR_CODE, 4001);
             return true;
         }
 
         // TODO Lv 7: nickname과 worldId를 ATTR_NICKNAME, ATTR_WORLD_ID 키로 attributes에 저장합니다.
-
+        attributes.put(ATTR_NICKNAME, nickname);
+        attributes.put(ATTR_WORLD_ID, worldId);
         attributes.put(ATTR_PLAYER_ID, player.getId());
-        attributes.put(ATTR_WORLD_SEED, (int) world.getSeed());
+        attributes.put(ATTR_WORLD_SEED, world.getSeed());
         attributes.put(ATTR_WORLD_DIFFICULTY, world.getDifficulty());
         return true;
     }
