@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -23,6 +24,7 @@ import com.gameexpert.world.WorldBaselineReadiness;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
@@ -114,7 +116,13 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-            WebSocketHandler wsHandler, Exception exception) {
+    public void afterHandshake(
+            ServerHttpRequest request, ServerHttpResponse response,
+            WebSocketHandler wsHandler, Exception exception
+    ) {
+        String nickname = readNickname(request);
+        Long worldId = readWorldId(request);
+
+        log.info("afterHandshake");
     }
 }
