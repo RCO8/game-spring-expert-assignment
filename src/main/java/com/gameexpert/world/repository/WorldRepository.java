@@ -15,15 +15,15 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 public interface WorldRepository extends JpaRepository<World, Long> {
-    @Query("select count(d) > 0 from WorldDimension d where d.child.id = :id")
+    @Query("select count(d) > 0 from WorldDimension d where d.id = :id")
     boolean isDimensionChild(@Param("id") Long id);
 
     @Query("select world from World world where not exists "
-            + "(select d.id from WorldDimension d where d.child.id = world.id) order by world.id")
+            + "(select d.id from WorldDimension d where d.id = world.id) order by world.id")
     List<World> findRootWorlds();
 
     @Query("select count(world) from World world where not exists "
-            + "(select d.id from WorldDimension d where d.child.id = world.id)")
+            + "(select d.id from WorldDimension d where d.id = world.id)")
     long countRootWorlds();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
