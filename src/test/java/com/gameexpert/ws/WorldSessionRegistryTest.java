@@ -19,7 +19,7 @@ class WorldSessionRegistryTest {
         assertThat(registry.get(12L, "Alex")).isNull();
     }
 
-    // @Test
+    @Test
     void duplicateCannotReplaceOriginalAndDifferentWorldIsIndependent() {
         WorldSessionRegistry registry = new WorldSessionRegistry();
         WebSocketSession original = mock(WebSocketSession.class);
