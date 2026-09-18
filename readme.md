@@ -9,7 +9,7 @@
     <li>WebSocket 연결과 사용자 식별✅</li>
     <li>HandshakeInterceptor 등록✅</li>
     <li>월드별 WebSocket 세션 관리✅</li>
-    <li>Redis 접속 상태 관리</li>
+    <li>Redis 접속 상태 관리✅</li>
     <li>메시지 라우팅과 Ping/Pong</li>
     <li>플레이어 이동 요청 처리</li>
     <li>채팅 요청 처리와 응답 구성</li>
