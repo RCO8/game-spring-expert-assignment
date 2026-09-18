@@ -55,7 +55,7 @@ class NicknameHandshakeInterceptorTest {
         WorldBaselineReadiness readiness = mock(WorldBaselineReadiness.class);
         when(readiness.isReady()).thenReturn(true);
         when(players.findByNickname("Unknown")).thenReturn(Optional.empty());
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/ws/worlds/72");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/ws/worlds/72?nickname=Alex");
         request.setParameter("nickname", "Unknown");
         Map<String, Object> attributes = new HashMap<>();
 

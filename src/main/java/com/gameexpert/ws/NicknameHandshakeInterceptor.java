@@ -51,18 +51,17 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         String nickname = readNickname(request);
-        if (playerRepository.existsByNickname(nickname)) {
+        if (nickname == null || nickname.isBlank()) {
             attributes.put(ATTR_ERROR_CODE, 4000);
             return true;
         }
 
         // TODO Lv 7: 닉네임으로 플레이어를 조회합니다. 없으면 null을 사용합니다.
-        Optional<Player> playerOptional = playerRepository.findByNickname(nickname);
-        if (playerOptional.isEmpty()) {
+        Player player = playerRepository.findByNickname(nickname).get();
+        if (playerRepository.existsByNickname(nickname)) {
             attributes.put(ATTR_ERROR_CODE, 4000);
             return true;
         }
-        Player player = playerOptional.get();
 
         Long worldId = readWorldId(request);
         if (worldId == null) {
@@ -124,5 +123,6 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
         Long worldId = readWorldId(request);
 
         log.info("afterHandshake");
+        log.info("nickname: {}, worldId: {}", nickname, worldId);
     }
 }
