@@ -44,7 +44,7 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-            WebSocketHandler wsHandler, Map<String, Object> attributes) {
+                                   WebSocketHandler wsHandler, Map<String, Object> attributes) {
         if (!baselineReadiness.isReady()) {
             response.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
             return false;
@@ -57,11 +57,12 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         // TODO Lv 7: 닉네임으로 플레이어를 조회합니다. 없으면 null을 사용합니다.
-        Player player = playerRepository.findByNickname(nickname).get();
-        if (playerRepository.existsByNickname(nickname)) {
+        Optional<Player> playerOptional = playerRepository.findByNickname(nickname);
+        if (playerOptional.isEmpty()) {
             attributes.put(ATTR_ERROR_CODE, 4000);
             return true;
         }
+        Player player = playerOptional.get();
 
         Long worldId = readWorldId(request);
         if (worldId == null) {
