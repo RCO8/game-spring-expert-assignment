@@ -87,7 +87,7 @@ public class NicknameHandshakeInterceptor implements HandshakeInterceptor {
         attributes.put(ATTR_NICKNAME, nickname);
         attributes.put(ATTR_WORLD_ID, worldId);
         attributes.put(ATTR_PLAYER_ID, player.getId());
-        attributes.put(ATTR_WORLD_SEED, world.getSeed());
+        attributes.put(ATTR_WORLD_SEED, (int)world.getSeed());
         attributes.put(ATTR_WORLD_DIFFICULTY, world.getDifficulty());
         return true;
     }
