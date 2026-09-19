@@ -1,5 +1,6 @@
 package com.gameexpert.ws.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.gameexpert.chat.service.ChatService;
@@ -17,6 +18,8 @@ import tools.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class ChatWsHandler implements WsMessageHandler {
@@ -29,7 +32,7 @@ public class ChatWsHandler implements WsMessageHandler {
 
     @Override
     public String type() {
-        return "chat";
+        return "content";
     }
 
     @Override
@@ -55,11 +58,20 @@ public class ChatWsHandler implements WsMessageHandler {
 
     private String readContent(JsonNode message) {
         // TODO Lv 13: API 명세의 채팅 내용을 읽습니다.
-        return "";
+        return WsFields.text(message, type());
     }
 
     private ChatResponse createResponse(WsMessageContext context, String content) {
         // TODO Lv 13: 현재 연결의 사용자로 저장하고 명세에 맞는 응답을 만듭니다.
-        return null;
+        ChatMessageResponse saved = chatService.saveMessage(
+                context.worldId(),
+                context.nickname(),
+                content
+        );
+        return new ChatResponse(
+                saved.getSender(),
+                saved.getContent(),
+                saved.getCreatedAt()
+        );
     }
 }
