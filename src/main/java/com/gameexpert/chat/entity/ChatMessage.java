@@ -30,19 +30,20 @@ public class ChatMessage {
     @JoinColumn(name = "world_id", nullable = false)
     private World world;
 
-    @Column(nullable = false, length = 16)
+    @Column(name = "sender_nickname", nullable = false, length = 16)
     private String senderNickname;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "content", nullable = false, length = 200)
     private String content;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatMessage(World world, String senderNickname, String content) {
         this.world = world;
         this.senderNickname = senderNickname;
         this.content = content;
+        this.createdAt = LocalDateTime.now();
     }
 }

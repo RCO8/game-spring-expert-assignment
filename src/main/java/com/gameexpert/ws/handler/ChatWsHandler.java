@@ -32,7 +32,7 @@ public class ChatWsHandler implements WsMessageHandler {
 
     @Override
     public String type() {
-        return "content";
+        return "chat";
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ChatWsHandler implements WsMessageHandler {
 
     private String readContent(JsonNode message) {
         // TODO Lv 13: API 명세의 채팅 내용을 읽습니다.
-        return WsFields.text(message, type());
+        return WsFields.text(message, "content");
     }
 
     private ChatResponse createResponse(WsMessageContext context, String content) {
