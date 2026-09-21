@@ -19,7 +19,7 @@
 
 <h3>도전 과제</h3>
 <ul>
-    <li>낙관적 락</li>
+    <li>낙관적 락✅</li>
     <li>커서 페이지 조회</li>
     <li>Redis 최근 채팅 캐시</li>
     <li>Redis Lua로 채팅 전송 횟수 제한</li>
